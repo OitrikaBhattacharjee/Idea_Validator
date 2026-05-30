@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>The Idea Validator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;700;800&family=Inter:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #09090f;
+    --surface: #111118;
+    --surface2: #18181f;
+    --border: rgba(255,255,255,0.08);
+    --border2: rgba(255,255,255,0.14);
+    --text: #f0f0f5;
+    --muted: #888899;
+    --accent: #7c6fcd;
+    --accent2: #a695f0;
+    --investor: #3b82f6;
+    --critic: #f59e0b;
+    --customer: #22c55e;
+    --competitor: #ef4444;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  /* WATERMARK HEADER */
+  .watermark-bar {
+    background: linear-gradient(90deg, #1a1535, #0f1a2e, #1a1535);
+    border-bottom: 1px solid var(--border2);
+    padding: 8px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 12px;
+    color: var(--muted);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .watermark-bar .left { display: flex; align-items: center; gap: 10px; }
+  .watermark-bar .badge {
+    background: rgba(124,111,205,0.2);
+    border: 1px solid rgba(124,111,205,0.4);
+    color: #a695f0;
+    padding: 2px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.03em;
+  }
+  .watermark-bar .right { color: #a695f0; font-size: 11px; }
+
+  /* HERO */
+  .hero {
+    text-align: center;
+    padding: 60px 24px 40px;
+    max-width: 680px;
+    margin: 0 auto;
+  }
+  .hero-tag {
+    display: inline-block;
+    background: rgba(124,111,205,0.15);
+    border: 1px solid rgba(124,111,205,0.3);
+    color: var(--accent2);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 5px 14px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+  }
+  .hero h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(32px, 6vw, 52px);
+    font-weight: 800;
+    line-height: 1.1;
+    margin-bottom: 16px;
+    background: linear-gradient(135deg, #f0f0f5 0%, #a695f0 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .hero p {
+    font-size: 16px;
+    color: var(--muted);
+    line-height: 1.7;
+    max-width: 480px;
+    margin: 0 auto;
+  }
+
+  /* INPUT AREA */
+  .input-section {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 0 24px 32px;
+  }
+  .input-wrapper {
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    border-radius: 16px;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+  .input-wrapper:focus-within { border-color: rgba(124,111,205,0.5); }
+  textarea {
+    width: 100%;
+    background: transparent;
+    border: none;
+    outline: none;
+    padding: 20px;
+    font-size: 15px;
+    font-family: 'Inter', sans-serif;
+    color: var(--text);
+    resize: none;
+    min-height: 110px;
+    line-height: 1.65;
+  }
+  textarea::placeholder { color: var(--muted); }
+  .input-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    border-top: 1px solid var(--border);
+  }
+  .input-hint { font-size: 12px; color: var(--muted); }
+  .run-btn {
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    padding: 10px 22px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 500;
+    font-family: 'Inter', sans-serif;
+    cursor: pointer;
+    transition: opacity 0.15s, transform 0.1s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .run-btn:hover { opacity: 0.88; }
+  .run-btn:active { transform: scale(0.97); }
+  .run-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+  /* PERSONAS GRID */
+  .results-section {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 0 24px 60px;
+  }
+  .personas-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+  @media (max-width: 520px) { .personas-grid { grid-template-columns: 1fr; } }
+
+  .persona-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+  .persona-card:hover { border-color: var(--border2); }
+  .persona-head {
+    padding: 14px 16px 12px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .persona-avatar {
+    width: 38px; height: 38px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; flex-shrink: 0;
+  }
+  .persona-name { font-size: 13px; font-weight: 500; color: var(--text); }
+  .persona-role { font-size: 11px; color: var(--muted); margin-top: 2px; }
+  .persona-body { padding: 14px 16px; min-height: 130px; }
+  .persona-body p { font-size: 13.5px; color: #b0b0c0; line-height: 1.7; }
+
+  /* SKELETON */
+  .skeleton { display: flex; flex-direction: column; gap: 8px; padding: 4px 0; }
+  .skel-line {
+    height: 11px; border-radius: 6px;
+    background: var(--surface2);
+    animation: pulse 1.3s ease-in-out infinite;
+  }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+  /* VERDICT */
+  .verdict-card {
+    background: var(--surface);
+    border: 1px solid rgba(124,111,205,0.25);
+    border-radius: 14px;
+    padding: 20px;
+  }
+  .verdict-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--accent2);
+    font-weight: 500;
+    margin-bottom: 10px;
+  }
+  .verdict-text { font-size: 14px; color: var(--text); line-height: 1.7; margin-bottom: 14px; }
+  .scores-row { display: flex; flex-wrap: wrap; gap: 8px; }
+  .score-pill {
+    font-size: 12px;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-weight: 500;
+    border: 1px solid transparent;
+  }
+  .pill-good { background: rgba(34,197,94,0.12); border-color: rgba(34,197,94,0.3); color: #4ade80; }
+  .pill-mid  { background: rgba(245,158,11,0.12); border-color: rgba(245,158,11,0.3); color: #fbbf24; }
+  .pill-low  { background: rgba(239,68,68,0.12);  border-color: rgba(239,68,68,0.3);  color: #f87171; }
+  .pill-info { background: rgba(255,255,255,0.06); border-color: var(--border2); color: var(--muted); }
+
+  /* WATERMARK FOOTER */
+  .watermark-footer {
+    text-align: center;
+    padding: 20px 24px 32px;
+    font-size: 12px;
+    color: #444455;
+  }
+  .watermark-footer span { color: #665599; }
+</style>
+</head>
+<body>
+
+<!-- STICKY WATERMARK BAR -->
+<div class="watermark-bar">
+  <div class="left">
+    <span class="badge">CodeStorm 2026 — Month 1</span>
+    <span>The Idea Validator</span>
+  </div>
+  <div class="right">Built by Oitrika Bhattacharjee · May 2026</div>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-tag">AI-Powered Pitch Room</div>
+  <h1>The Idea Validator</h1>
+  <p>Pitch your startup or product idea. Get brutally honest feedback from 4 different minds — before you waste months building the wrong thing.</p>
+</div>
+
+<!-- INPUT -->
+<div class="input-section">
+  <div class="input-wrapper">
+    <textarea id="ideaInput" placeholder="Describe your idea... e.g. 'An app that turns voice memos into structured to-do lists using AI'"></textarea>
+    <div class="input-footer">
+      <span class="input-hint">Be specific — the more detail, the sharper the feedback</span>
+      <button class="run-btn" id="runBtn" onclick="validate()">
+        ▶ Pitch to the room
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- RESULTS -->
+<div class="results-section" id="results"></div>
+
+<!-- FOOTER WATERMARK -->
+<div class="watermark-footer">
+  Built by <span>Oitrika Bhattacharjee</span> for CodeStorm 2026 &nbsp;·&nbsp; AI-Powered Web Utility &nbsp;·&nbsp; May 30, 2026
+</div>
+
+<script>
+const personas = [
+  {
+    key: "investor", name: "Alex Chen", role: "Skeptical Investor", icon: "💼",
+    color: "#3b82f6", bg: "rgba(59,130,246,0.12)",
+    prompt: `You are Alex Chen, a skeptical Silicon Valley VC who has seen thousands of pitches. You are analytical, data-driven, and deeply skeptical. You ask hard questions about market size, unit economics, defensibility, and competitive moat. You're not mean, but you don't sugarcoat. Keep it to 3-4 sentences. Start with your gut reaction, then your main concern, then one sharp question. No bullet points, just natural speech.`
+  },
+  {
+    key: "critic", name: "Maya Osei", role: "Harsh Critic", icon: "🔍",
+    color: "#f59e0b", bg: "rgba(245,158,11,0.12)",
+    prompt: `You are Maya Osei, a product critic and tech journalist known for brutal honest takes. You look for logical gaps, execution risks, and why ideas fail in practice. You've seen too many "Uber for X" pitches. Keep it to 3-4 sentences. Be direct and specific about what's wrong or risky. No bullet points, just sharp honest prose.`
+  },
+  {
+    key: "customer", name: "Jordan Park", role: "Excited Early Adopter", icon: "🙋",
+    color: "#22c55e", bg: "rgba(34,197,94,0.12)",
+    prompt: `You are Jordan Park, an enthusiastic early adopter and tech-savvy consumer who loves trying new products. You immediately see the use cases and get excited. You share how you'd use it personally, what feature you'd want first, and who you'd tell about it. Keep it to 3-4 sentences. Sound genuinely excited and human. No bullet points.`
+  },
+  {
+    key: "competitor", name: "Sam Rivera", role: "The Competitor", icon: "⚔️",
+    color: "#ef4444", bg: "rgba(239,68,68,0.12)",
+    prompt: `You are Sam Rivera, the founder of an existing competing product. You're not threatened, but you're honest about what they'd need to do to beat you. You point out what already exists, what you already do better, and what would make you genuinely worried if this idea launched. Keep it to 3-4 sentences. Be calm, confident, and specific. No bullet points.`
+  }
+];
+
+async function validate() {
+  const idea = document.getElementById('ideaInput').value.trim();
+  if (!idea) return;
+  const btn = document.getElementById('runBtn');
+  btn.disabled = true;
+  btn.textContent = '⏳ In the room...';
+
+  const results = document.getElementById('results');
+  results.innerHTML = `
+    <div class="personas-grid" id="grid">
+      ${personas.map(p => `
+        <div class="persona-card" id="card-${p.key}">
+          <div class="persona-head">
+            <div class="persona-avatar" style="background:${p.bg}; font-size:18px;">${p.icon}</div>
+            <div>
+              <div class="persona-name">${p.name}</div>
+              <div class="persona-role">${p.role}</div>
+            </div>
+          </div>
+          <div class="persona-body" id="body-${p.key}">
+            <div class="skeleton">
+              <div class="skel-line" style="width:88%"></div>
+              <div class="skel-line" style="width:72%"></div>
+              <div class="skel-line" style="width:82%"></div>
+              <div class="skel-line" style="width:58%"></div>
+            </div>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+    <div id="verdictArea"></div>
+  `;
+
+  const responses = {};
+  await Promise.all(personas.map(async (p) => {
+    try {
+      const res = await fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          model: "claude-sonnet-4-20250514",
+          max_tokens: 1000,
+          system: p.prompt,
+          messages: [{ role: "user", content: `The idea being pitched: "${idea}"` }]
+        })
+      });
+      const data = await res.json();
+      const text = data.content?.map(c => c.text || '').join('') || 'No response.';
+      responses[p.key] = text;
+      document.getElementById(`body-${p.key}`).innerHTML = `<p>${text}</p>`;
+    } catch(e) {
+      document.getElementById(`body-${p.key}`).innerHTML = `<p style="color:#666">Could not load response.</p>`;
+    }
+  }));
+
+  try {
+    const vRes = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "claude-sonnet-4-20250514",
+        max_tokens: 500,
+        system: `You are a neutral analyst. Given a startup idea and feedback from 4 personas, return ONLY a valid JSON object with: verdict (one honest sentence), viability (1-10), originality (1-10), marketFit (1-10), biggestRisk (short phrase), biggestStrength (short phrase). No markdown, no extra text.`,
+        messages: [{ role: "user", content: `Idea: "${idea}"\n\nInvestor: ${responses.investor}\nCritic: ${responses.critic}\nCustomer: ${responses.customer}\nCompetitor: ${responses.competitor}` }]
+      })
+    });
+    const vd = await vRes.json();
+    const vText = vd.content?.map(c => c.text||'').join('') || '{}';
+    const v = JSON.parse(vText.replace(/```json|```/g,'').trim());
+
+    const pillClass = n => n >= 8 ? 'pill-good' : n >= 5 ? 'pill-mid' : 'pill-low';
+
+    document.getElementById('verdictArea').innerHTML = `
+      <div class="verdict-card">
+        <div class="verdict-label">Room verdict</div>
+        <div class="verdict-text">${v.verdict || ''}</div>
+        <div class="scores-row">
+          <span class="score-pill ${pillClass(v.viability)}">Viability ${v.viability}/10</span>
+          <span class="score-pill ${pillClass(v.originality)}">Originality ${v.originality}/10</span>
+          <span class="score-pill ${pillClass(v.marketFit)}">Market fit ${v.marketFit}/10</span>
+          <span class="score-pill pill-info">Risk: ${v.biggestRisk || '—'}</span>
+          <span class="score-pill pill-info">Strength: ${v.biggestStrength || '—'}</span>
+        </div>
+      </div>
+    `;
+  } catch(e) {}
+
+  btn.disabled = false;
+  btn.textContent = '↺ Pitch again';
+}
+</script>
+</body>
+</html>
