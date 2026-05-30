@@ -65,6 +65,7 @@ No installation needed. Seriously.
 3. That's it
 
 > **Note:** The Claude API is called client-side. For production use, move the API call to a backend to protect your key.
+> **To enable AI responses:** Get a free API key from console.anthropic.com and add it to the fetch headers in index.html as `"x-api-key": "your-key-here"` and `"anthropic-version": "2023-06-01"`
 
 ---
 
